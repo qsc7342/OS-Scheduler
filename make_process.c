@@ -36,7 +36,7 @@ int main() {
         if(!i | i) arrive = 0; // 모든 프로세스 0에 도착으로 가정
         // else arrive = rand() % (i * 10);
         burst = rand() % 10 + 5;
-        deadline = burst + rand() % 10 + 60;
+        deadline = burst + rand() % 10 + 40;
 
         fprintf(fi, "%d %d %d\n",arrive, burst, deadline);
         cpu_util += (double) burst / deadline;
