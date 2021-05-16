@@ -21,6 +21,7 @@ void makeline() {
     printf("------------------------------\n");
     return;
 }
+
 int main() {
     srand(time(NULL)); // 시드값 적용
 
