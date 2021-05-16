@@ -16,6 +16,7 @@
 
 int cnt = 0;
 int visit[101][PROCESS] = {}; // 간트차트 생성용
+int inready[101] = {};
 
 void move_cur(int x, int y)
 {
@@ -118,18 +119,23 @@ int main() {
     for(int cur_time = 0 ; cur_time <= 100 ; cur_time++) { // 시간이 지날수록
         system("clear");
         while(cursor < cnt &&  proc[cursor].arrive_time <= cur_time) {
+            inready[proc[cursor].pnum] = 1;
             push(&ready_queue, proc[cursor++]);
         }
         if(size(&ready_queue) && size(&execute_queue) == 0) {
-            push(&execute_queue, pop(&ready_queue));
+            process exec_proc = pop(&ready_queue);
+            inready[exec_proc.pnum] = 0;
+            push(&execute_queue, exec_proc);
         }
         move_cur(0, 0);
         printf(ANSI_COLOR_GREEN"Current Time : %d\n\n", cur_time);
         printf(ANSI_COLOR_YELLOW"==== Ready Queue ====\n");
         if(size(&ready_queue) > 0) {
             print_queue(&ready_queue);
-            if(check_num(&ready_queue) != -1) {
-                visit[cur_time][check_num(&ready_queue)] = -1;
+            for(int ready = 0 ; ready < 100 ; ready++) {
+                if(inready[ready] == 1) {
+                    visit[cur_time][ready] = -1;
+                }
             }
         }
         else printf("No Process Remain\n");
