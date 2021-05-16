@@ -49,6 +49,10 @@ char* print_top(Queue *q) {
     return q -> proc[q -> front].pname;
 }
 
+int print_top_num(Queue *q) {
+    return q -> proc[q -> front].pnum;
+} 
+
 int print_top_time(Queue *q) {
     return q -> proc[q -> front].burst_time;
 }
@@ -65,17 +69,16 @@ void print_queue(Queue *q) {
     while(size(&n) > 0) {
         printf("+     %s     +\n",pop(&n).pname);
     }
-    // int i = q -> front;
-    // int cnt = 0;
-    // while(i != q -> rear) {
-    //     if(i - 1 == q -> num) {
-    //         i = 0;
-    //     }
-    //     printf("+     %s     +\n",q -> proc[i].pname);
-    //     i++;
-    //     cnt++;
-    //     if(cnt > 5) return;
-    // }
+}
+
+int check_num(Queue *q) {
+    Queue n = *q;
+    if(size(&n) > 0) {
+        process p = pop(&n);
+        check_num(&n);
+        return p.pnum;
+    }
+    return -1;
 }
 
 void check_queue(Queue *q) {

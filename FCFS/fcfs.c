@@ -56,22 +56,25 @@ void clear_terminal() {
     정렬 과정에서 필요한 swap함수 입니다.
 */
 void swap(process *proc1, process *proc2) {
-    int tmp_arr, tmp_burst, tmp_dead;
+    int tmp_arr, tmp_burst, tmp_dead, tmp_num;
     char *tmp_name;
     tmp_arr = proc1->arrive_time;
     tmp_burst = proc1->burst_time;
     tmp_dead = proc1->deadline;
     tmp_name = proc1->pname;
+    tmp_num = proc1->pnum;
 
     proc1->arrive_time = proc2->arrive_time;
     proc1->burst_time = proc2->burst_time;
     proc1->deadline = proc2->deadline;
     proc1->pname = proc2->pname;
+    proc1->pnum = proc2->pnum;
 
     proc2->arrive_time = tmp_arr;
     proc2->burst_time = tmp_burst;
     proc2->deadline = tmp_dead;
     proc2->pname = tmp_name;
+    proc2->pnum = tmp_num;
 }
 
 /*
@@ -123,7 +126,12 @@ int main() {
         move_cur(0, 0);
         printf(ANSI_COLOR_GREEN"Current Time : %d\n\n", cur_time);
         printf(ANSI_COLOR_YELLOW"==== Ready Queue ====\n");
-        if(size(&ready_queue) > 0)print_queue(&ready_queue);
+        if(size(&ready_queue) > 0) {
+            print_queue(&ready_queue);
+            if(check_num(&ready_queue) != -1) {
+                visit[cur_time][check_num(&ready_queue)] = -1;
+            }
+        }
         else printf("No Process Remain\n");
         printf("=====================\n");
 
@@ -141,6 +149,7 @@ int main() {
             printf("===============================\n");
 
             execution(&execute_queue);
+            visit[cur_time][print_top_num(&execute_queue)] = 1;
             if(check_isend(&execute_queue)) pop(&execute_queue);    
         }
         else {
@@ -151,10 +160,39 @@ int main() {
             move_cur(30, 5);
             printf("===============================\n");
         }
-
-        move_cur(30, 10);
+        printf(ANSI_COLOR_RESET);
+        move_cur(0, 10);
+        printf("-Gantt Chart-\n");
+        printf("===============================\n");
+        printf(ANSI_COLOR_YELLOW"Waiting : █    ");
+        printf(ANSI_COLOR_GREEN"Executing : █    \n");
+        printf(ANSI_COLOR_RESET);
+        printf("===============================\n");
+        printf("            ");
+        for(int j = 0 ; j <= cur_time ; j++) {
+            if(j % 10 == 0) printf("%d", j / 10);
+            else printf(" ");
+        }
+        printf("\n");
+        printf("            ");
+        for(int j = 0 ; j <= cur_time ; j++) {
+            if(j % 5 == 0) printf("+");
+            else printf("-");
+        }
+        printf("\n");
+        for(int k = 0 ; k < cnt ; k++) {
+            printf(ANSI_COLOR_RESET);
+            printf("PROCESS %d : ", k + 1);
+            for(int j = 0 ; j <= cur_time ; j++) {
+                if(visit[j][k + 1] == -1) printf(ANSI_COLOR_YELLOW"█");
+                else if(visit[j][k + 1] == 1) printf(ANSI_COLOR_GREEN"█");
+                else printf(" ");
+            }
+            printf("\n");
+        }
         fflush(stdout);
-        usleep(100000);
+
+        usleep(10000);
     }
 
 
