@@ -26,7 +26,7 @@ int is_prior_by_cycle(process proc1, process proc2) { // 주기 확인
 int is_prior_by_remain(process proc1, process proc2) { // 주기 확인
     int f = proc1.burst_time; // proc1의 주기
     int s = proc2.burst_time; /// proc2의 주기
-    if(f < s) return 1; // f의 주기가 더 짧음. 1 리턴
+    if(f > s) return 1; // f의 주기가 더 짧음. 1 리턴
     else return 0; // s의 주기가 더 짧음. 0 리턴 
 }
 
@@ -53,7 +53,7 @@ void push(Heap *h, process proc) {
     int idx = h -> num;
     int paridx = getpar(idx);
     h -> proc[idx] = proc;
-    while(idx > 0 && is_prior_by_remain(h -> proc[idx], h -> proc[paridx])) {
+    while(idx > 0 && is_prior_by_cycle(h -> proc[paridx], h -> proc[idx])) {
         swapnode(h, idx, paridx);
         idx = paridx;
         paridx = getpar(idx);
@@ -79,13 +79,13 @@ process pop(Heap *h) {
             curidx = leftidx;
         }
         else {
-            if(is_prior_by_remain(h -> proc[leftidx], h -> proc[rightidx])) {
+            if(is_prior_by_cycle(h -> proc[leftidx], h -> proc[rightidx])) {
                 curidx = rightidx;
             }
             else curidx = leftidx;
         }
 
-        if(is_prior_by_remain(h -> proc[paridx], h -> proc[curidx])) {
+        if(is_prior_by_cycle(h -> proc[paridx], h -> proc[curidx])) {
             swapnode(h, paridx, curidx);
             paridx = curidx;
         }

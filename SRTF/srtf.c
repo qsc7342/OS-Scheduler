@@ -128,6 +128,16 @@ int main() {
             inready[exec_proc.pnum] = 0;
             push(&execute_queue, exec_proc);
         }
+        if(size(&ready_queue) > 0 && size(&execute_queue) > 0) {
+            if(print_top_time(&ready_queue) < print_top_time(&execute_queue)) {
+                process new_execute = pop(&ready_queue);
+                process new_ready = pop(&execute_queue);
+                inready[new_execute.pnum] = 0;
+                inready[new_ready.pnum] = 1;
+                push(&execute_queue, new_execute);
+                push(&ready_queue, new_ready);
+            }
+        }
         move_cur(0, 0);
         printf(ANSI_COLOR_GREEN"Current Time : %d\n\n", cur_time);
         printf(ANSI_COLOR_YELLOW"==== Ready Queue ====\n");
