@@ -71,6 +71,12 @@ void print_queue(Queue *q) {
     }
 }
 
+void print_queue2(Queue *q) {
+	for(int i = q -> front ; i < q -> rear ; i++) {
+		printf("+     %s     +\n", q -> proc[i].pname);
+	}
+}
+
 int check_num(Queue *q) {
     Queue n = *q;
     if(size(&n) > 0) {
