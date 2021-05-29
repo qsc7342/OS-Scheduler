@@ -33,7 +33,7 @@ int max(int a, int b) {
 }
 
 void makeline() {
-    for(int i = 0 ; i < 120 ; i++) {
+    for(int i = 0 ; i < 55 ; i++) {
         printf("=");
     }
     printf("\n");
