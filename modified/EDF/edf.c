@@ -141,22 +141,30 @@ int main() {
             push(&ready_queue, proc[cursor - 1]); // 레디 큐에 푸쉬
             waiting[proc[cursor - 1].pnum][0] = cur_time; // cursor 프로세스는 waiting을 시작하게 됨.
             getcolor(cursor);
-            printf("( Process [%d] is inserted in Ready Queue at %d )\n", cursor, cur_time);
+            printf("( Process [%d] is inserted in Ready Queue at %d )\n", proc[cursor - 1].pnum, cur_time);
             cursor++;
         }
-        while(size(&ready_queue) && cur_time > print_top_arrive(&ready_queue) + print_top_deadline(&ready_queue)) {
+        while(size(&ready_queue) && cur_time > print_top_deadline(&ready_queue)) {
             process dead_proc = pop(&ready_queue);
             getcolor(dead_proc.pnum);
             isdead[dead_proc.pnum] = 1;
+            if(waiting[dead_proc.pnum][0] > 0) {
+                fprintf(fd, "%s %d %d %s\n",dead_proc.pname, waiting[dead_proc.pnum][0], cur_time, "Waiting");
+                waiting[dead_proc.pnum][0] = 0;
+            }
             printf("( Process [%d] dead at %d )\n",dead_proc.pnum, cur_time);
-            fprintf(fd, "%s %d %d %s\n",dead_proc.pname, cur_time - 1, cur_time, "Dead");
+            fprintf(fd, "%s %d %d %s\n",dead_proc.pname, cur_time, cur_time + 10, "Dead");
         }
-        while(size(&execute_queue) && cur_time > print_top_arrive(&execute_queue) + print_top_deadline(&execute_queue)) {
+        while(size(&execute_queue) && cur_time > print_top_deadline(&execute_queue)) {
             process dead_proc = pop(&execute_queue);
             getcolor(dead_proc.pnum);
             isdead[dead_proc.pnum] = 1;
+            if(executing[dead_proc.pnum][0] > 0) {
+                fprintf(fd, "%s %d %d %s\n",dead_proc.pname, executing[dead_proc.pnum][0], cur_time, "Executing");
+                executing[dead_proc.pnum][0] = 0;
+            }
             printf("( Process [%d] dead at %d )\n",dead_proc.pnum, cur_time);
-            fprintf(fd, "%s %d %d %s\n",dead_proc.pname, cur_time - 1, cur_time, "Dead");
+            fprintf(fd, "%s %d %d %s\n",dead_proc.pname, cur_time, cur_time + 10, "Dead");
         }
         if(size(&ready_queue) && !size(&execute_queue)) { // 레디 큐에만 프로세스가 존재
             process exec_proc = pop(&ready_queue); // 새로 실행하게 될 프로세스

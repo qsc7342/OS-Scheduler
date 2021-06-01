@@ -27,7 +27,7 @@ int tot_wait = 0;
 int tot_response = 0;
 int tot_turnaround = 0;
 int context_switching = 0;
-int time_quantum = 2;
+int time_quantum = 3;
 
 void getcolor(int n) {
     switch(n % 7) {
